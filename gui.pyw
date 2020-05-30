@@ -20,6 +20,7 @@ USER_NAME = getpass.getuser()
 CHECKBOX_STATE = 0
 STARTUP_NAME = "open.bat"
 STARTUP_PATH = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' % USER_NAME
+STARTUP_KEY = "startup"
 
 
 # print('sys.argv[0] =', sys.argv[0])
@@ -31,7 +32,7 @@ def add_to_startup(file_path=""):
     if file_path == "":
         file_path = os.path.realpath(__file__)
     with open(STARTUP_PATH + '\\' + STARTUP_NAME, "w+") as bat_file:
-        bat_file.write(r'start "" "%s"' % file_path)
+        bat_file.write(f'start "" "{file_path}"  "{STARTUP_KEY}"')
 
 
 def remove_startup():
@@ -252,6 +253,10 @@ def main():
 
 if __name__ == '__main__':
     filename = checkConfig(configfile_name)
+    for arg in sys.argv:
+        print('Argument: ', arg)
+        if arg == STARTUP_KEY:
+            withdraw_window(mainwindow)
     if filename:
         print("Watched Folder is " + filename)
         background(lambda: h.watchDir(filename), ())
