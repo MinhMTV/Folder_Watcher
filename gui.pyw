@@ -14,10 +14,12 @@ import getpass
 filename = ""
 configfile_name = "config.ini"
 icon_name = "icon.png"
-fenster = Tk()
+mainwindow = Tk()
 folder_path = StringVar()
 USER_NAME = getpass.getuser()
 CHECKBOX_STATE = 0
+STARTUP_NAME = "open.bat"
+STARTUP_PATH = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' % USER_NAME
 
 
 # print('sys.argv[0] =', sys.argv[0])
@@ -28,15 +30,15 @@ CHECKBOX_STATE = 0
 def add_to_startup(file_path=""):
     if file_path == "":
         file_path = os.path.realpath(__file__)
-    bat_path = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' % USER_NAME
-    with open(bat_path + '\\' + "open.bat", "w+") as bat_file:
+    with open(STARTUP_PATH + '\\' + STARTUP_NAME, "w+") as bat_file:
         bat_file.write(r'start "" "%s"' % file_path)
 
-def remove_startup(file_path=""):
-    if file_path == "":
-        file_path = os.path.realpath(__file__)
-    bat_path = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' % USER_NAME
-    os.remove(os.path.join(bat_path, file_path))
+
+def remove_startup():
+    try:
+        os.remove(os.path.join(STARTUP_PATH, STARTUP_NAME))
+    except OSError:
+        pass
 
 
 def createConfig(configfile_name, section, key, value):
@@ -59,7 +61,6 @@ def createConfig(configfile_name, section, key, value):
 # Check if there is already a configuration file
 def checkConfig(configfile_name):
     config = os.path.join(os.path.dirname(sys.argv[0]), configfile_name)
-    print(config)
     # Create the configuration file as it doesn't exist yet
     if os.path.isfile(config):
         read_config = configparser.ConfigParser()
@@ -75,7 +76,6 @@ def checkConfig(configfile_name):
 
 def checkSetting(configfile_name):
     config = os.path.join(os.path.dirname(sys.argv[0]), configfile_name)
-    print(config)
     # Create the configuration file as it doesn't exist yet
     if os.path.isfile(config):
         read_config = configparser.ConfigParser()
@@ -117,6 +117,9 @@ def withdraw_window(window):
 def settings():
     settings = Toplevel()
     settings.title("Settings")
+    positioning_win(settings)
+    settings.grid_rowconfigure(0, weight=1)
+    settings.grid_columnconfigure(0, weight=1)
 
     info_text = Label(settings, text="Start Script on Windows Startup")
     info_text.grid(row=0, column=0, pady=20)
@@ -133,7 +136,6 @@ def settings():
 
 def saveSettings(window, checkbox):
     messagebox.showinfo(message="Settings were saved", title="Save")
-    print(checkbox.get())
     if checkbox.get():
         temp = "True"
         createConfig(configfile_name, "SETTINGS", "AUTOSTART", temp)
@@ -191,47 +193,61 @@ def on_closing(window):
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         window.destroy()
 
+def positioning_win(win):
+    # Gets the requested values of the height and widht.
+    windowWidth = win.winfo_reqwidth()
+    windowHeight = win.winfo_reqheight()
+    print("Width", windowWidth, "Height", windowHeight)
+
+    # Gets both half the screen width/height and window width/height
+    positionRight = int(win.winfo_screenwidth() / 2 - windowWidth / 2)
+    positionDown = int(win.winfo_screenheight() / 2 - windowHeight / 2)
+
+    # Positions the window in the center of the page.
+    win.geometry("+{}+{}".format(positionRight, positionDown))
+
 
 def main():
-    fenster.title("Folder Watcher")
+    mainwindow.title("Folder Watcher")
+    positioning_win(mainwindow)
+    mainwindow.grid_rowconfigure(0, weight=1)
+    mainwindow.grid_columnconfigure(0, weight=1)
 
-    info_text = Label(fenster, text="Please choose the folder that you want to watch!")
+    info_text = Label(mainwindow, text="Please choose the folder that you want to watch!")
     info_text.grid(row=0, column=0, pady=20)
 
-    # Menüleiste erstellen
-    menuleiste = Menu(fenster)
+    # create menu
+    menubar = Menu(mainwindow)
 
-    lbl1 = Label(master=fenster, textvariable=folder_path)
+    lbl1 = Label(master=mainwindow, textvariable=folder_path)
     lbl1.grid(row=1, column=0)
     button2 = Button(text='Select', command=lambda: background(changePath, ()))
     button2.grid(row=2, column=0, pady=20)
 
-    # Menü Datei und Help erstellen
-    datei_menu = Menu(menuleiste, tearoff=0)
-    help_menu = Menu(menuleiste, tearoff=0)
+    # file menu and help menu to menu bar
+    file_menu = Menu(menubar, tearoff=0)
+    help_menu = Menu(menubar, tearoff=0)
 
-    # Beim Klick auf Datei oder auf Help sollen nun weitere Einträge erscheinen.
-    # Diese werden also zu "datei_menu" und "help_menu" hinzugefügt
-    datei_menu.add_command(label="Save", command=savePATH)
-    datei_menu.add_command(label="Minimize", command=lambda: withdraw_window(fenster))
-    datei_menu.add_separator()  # Fügt eine Trennlinie hinzu
-    datei_menu.add_command(label="Settings", command=settings)
-    datei_menu.add_separator()  # Fügt eine Trennlinie hinzu
-    datei_menu.add_command(label="Exit", command=fenster.destroy)
+    # click on file or help menu to open other menus
+    file_menu.add_command(label="Save", command=savePATH)
+    file_menu.add_command(label="Minimize", command=lambda: withdraw_window(mainwindow))
+    file_menu.add_separator()  # Add a seperator
+    file_menu.add_command(label="Settings", command=settings)
+    file_menu.add_separator()  # Add a seperator
+    file_menu.add_command(label="Exit", command=mainwindow.destroy)
 
     help_menu.add_command(label="Info!", command=action_get_info_dialog)
 
-    # Nun fügen wir die Menüs (Datei und Help) der Menüleiste als
-    # "Drop-Down-Menü" hinzu
-    menuleiste.add_cascade(label="File", menu=datei_menu)
-    menuleiste.add_cascade(label="Help", menu=help_menu)
+    # add menu to menu bar
+    menubar.add_cascade(label="File", menu=file_menu)
+    menubar.add_cascade(label="Help", menu=help_menu)
 
-    # Die Menüleiste mit den Menüeinrägen noch dem Fenster übergeben und fertig.
-    fenster.config(menu=menuleiste)
+    # give menu to menu bar
+    mainwindow.config(menu=menubar)
 
-    fenster.protocol('WM_DELETE_WINDOW', lambda: on_closing(fenster))
+    mainwindow.protocol('WM_DELETE_WINDOW', lambda: on_closing(mainwindow))
 
-    fenster.mainloop()
+    mainwindow.mainloop()
 
 
 if __name__ == '__main__':
