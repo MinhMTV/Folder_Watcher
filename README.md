@@ -1,4 +1,4 @@
-# Project Title
+# Folder Watcher
 
 Watch a folder and automatically sort out all files with same extensions from specific folder to a group of new folders
 
