@@ -77,22 +77,20 @@ valid_tf = [
     "doc", "docm", "docx", "dot", "dotx", "odt", "pdf", "rtf", "txt", "wps", "wpd", "gdoc"
 ]
 
-#common executable file extensions
+# common executable file extensions
 valid_exe = [
     "bat", "bin", "com", "exe", "msi"
 ]
 
-#FILE FOLDER NAME GROUP
+# FILE FOLDER NAME GROUP
 VALID_IMG = "Image_Files"
 VALID_ARCHIV = "Archiv_Files"
 VALID_EXE = "Exe_Files"
 VALID_TF = "Text_Files"
 VALID_PRES = "Presentation_Files"
-VALID_VIDEOS ="Video_Files"
+VALID_VIDEOS = "Video_Files"
 VALID_SPREAD = "Spreadsheet_Files"
 OTHER = "Other_Files"
-
-
 
 
 # write text to a text_file
@@ -116,6 +114,7 @@ def writeText(path, text):
             text_file.write("\n")
         text_file.write(text)
     text_file.close()
+
 
 # get List w all Folders with path within the given @path
 def getListofFolders(path):
@@ -198,6 +197,7 @@ def getNrofImages(path):
         count += len(x)
     return count
 
+
 # get only file name without path
 def getFileName(FileList):
     fileNames = []
@@ -207,6 +207,7 @@ def getFileName(FileList):
         return fileNames
     elif isinstance(FileList, str):
         return os.path.basename(FileList)
+
 
 # my_path/     the dir
 # **/       every file and dir under my_path
@@ -361,6 +362,7 @@ def removeFile(rmFile):
     except OSError:
         pass
 
+
 # remove file by provided FileList
 def removeFiles(rmFileList):
     for x in rmFileList:
@@ -409,7 +411,8 @@ def checkDuplicateByEndInd(duList, fileList, indicator):
     dupList = [dupwOrg, [x for x in duList if x not in dupwOrg]]
     return dupList  # [DuplicatePath with Original Files, DuplicateFiles W/o Orginal Files]
 
-#sort files by their file extension and copy them into new folder
+
+# sort files by their file extension and copy them into new folder
 def sortbyext(path):
     list = getListofFileswPath(path)
     for file in list:
@@ -419,7 +422,8 @@ def sortbyext(path):
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
 
-#sort files by given file groups and copy them into group folder
+
+# sort files by given file groups and copy them into group folder
 def sortbyGroup(path):
     list = getListofFileswPath(path)
     for file in list:

@@ -28,6 +28,7 @@ STARTUP_KEY = "startup"
 # print('path =', pathname)
 # print('full path =', os.path.abspath(pathname))
 
+
 def add_to_startup(file_path=""):
     if file_path == "":
         file_path = os.path.realpath(__file__)
@@ -89,12 +90,14 @@ def checkSetting(configfile_name):
         print('No setting File')
         return False
 
+
 def checkWatchfolder(watchPath):
     if watchPath:
         print("Watched Folder is " + watchPath)
         background(lambda: h.watchDir(watchPath), ())
     else:
         print("No Watched Folder defined yet")
+
 
 # Systemtray
 def quit_window(icon, item, window):
@@ -200,6 +203,7 @@ def on_closing(window):
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         window.destroy()
 
+
 def positioning_win(win):
     # Gets the requested values of the height and widht.
     windowWidth = win.winfo_reqwidth()
@@ -219,6 +223,7 @@ def main():
     positioning_win(mainwindow)
     mainwindow.grid_rowconfigure(0, weight=1)
     mainwindow.grid_columnconfigure(0, weight=1)
+    mainwindow.iconphoto(True, PhotoImage(file=os.path.join(os.path.dirname(sys.argv[0]), icon_name)))
 
     info_text = Label(mainwindow, text="Please choose the folder that you want to watch!")
     info_text.grid(row=0, column=0, pady=20)
