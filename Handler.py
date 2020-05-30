@@ -23,6 +23,10 @@ ACTIONS = {
     5: "Renamed from something"
 }
 
+list_ext = [f.valid_images, f.valid_archiv, f.valid_exe, f.valid_tf, f.valid_pres, f.valid_videos, f.valid_spread]
+
+
+
 
 def watchDir(path):
     PATH_TO_WATCH = path or "."
@@ -36,25 +40,12 @@ def watchDir(path):
         try:
             file_type, filename, action = files_changed.get_nowait()
             print(file_type, filename, action)
-            # if action == "Created":
-            #     if file_type == 'file':
-            #         ext = f.getFileExt(filename)
-            #     print(ext)
-            #     if os.path.exists(filename):
-            #         folderpath = f.createFolder(os.curdir, ext)
-            #         f.copyFile(f.getFileName(filename), folderpath)
-            #         f.removeFile(filename)
         except queue.Empty:
             pass
         time.sleep(1)
         # list = f.getFileAndDirPath(path)
         # print(list)
-        list = f.getListofFileswPath(path)
-        for file in list:
-            if os.path.exists(file):
-                folderpath = f.createFolder(os.curdir, f.getFileExt(file))
-                f.copyFile(f.getFileName(file), folderpath)
-                f.removeFile(file)
+        f.sortbyGroup(path)
 
 
 def watch_path(path_to_watch, include_subdirectories=False):

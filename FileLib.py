@@ -8,23 +8,97 @@ import glob
 import re
 import shutil
 
-#all Images Extensions
-valid_images = ["ase", "art", "bmp", "blp", "cd5", "cit", "cpt", "cr2", "cut", "dds", "dib", "djvu", "egt", "exif", "gif", "gpl", "grf", "icns", "ico", "iff", "jng", "jpeg", "jpg", "jfif", "jp2", "jps",
-                "lbm", "max", "miff", "mng", "msp", "nitf", "ota", "pbm", "pc1", "pc2", "pc3", "pcf", "pcx", "pdn", "pgm", "PI1", "PI2", "PI3", "pict", "pct", "pnm", "pns", "ppm", "psb", "psd", "pdd",
-                "psp", "px", "pxm", "pxr", "qfx", "raw", "rle", "sct", "sgi", "rgb", "int", "bw", "tga", "tiff", "tif", "vtf", "xbm", "xcf", "xpm", "3dv", "amf", "ai", "awg", "cgm", "cdr", "cmx",
-                "dxf", "e2d", "egt", "eps", "fs", "gbr", "odg", "svg", "stl", "vrml", "x3d", "sxd", "v2d", "vnd", "wmf", "emf", "art", "xar", "png", "webp", "jxr", "hdp", "wdp", "cur", "ecw",
-                "iff", "lbm", "liff", "nrrd", "pam", "pcx", "pgf", "sgi", "rgb", "rgba", "bw", "int", "inta", "sid", "ras", "sun", "tga"
-                ]
+# all Images Extensions
+valid_images = [
+    "ase", "art", "bmp", "blp", "cd5", "cit", "cpt", "cr2", "cut", "dds", "dib", "djvu", "egt", "exif",
+    "gif", "gpl", "grf", "icns", "ico", "iff", "jng", "jpeg", "jpg", "jfif", "jp2", "jps",
+    "lbm", "max", "miff", "mng", "msp", "nitf", "ota", "pbm", "pc1", "pc2", "pc3", "pcf", "pcx", "pdn",
+    "pgm", "PI1", "PI2", "PI3", "pict", "pct", "pnm", "pns", "ppm", "psb", "psd", "pdd",
+    "psp", "px", "pxm", "pxr", "qfx", "raw", "rle", "sct", "sgi", "rgb", "int", "bw", "tga", "tiff", "tif",
+    "vtf", "xbm", "xcf", "xpm", "3dv", "amf", "ai", "awg", "cgm", "cdr", "cmx",
+    "dxf", "e2d", "egt", "eps", "fs", "gbr", "odg", "svg", "stl", "vrml", "x3d", "sxd", "v2d", "vnd", "wmf",
+    "emf", "art", "xar", "png", "webp", "jxr", "hdp", "wdp", "cur", "ecw",
+    "iff", "lbm", "liff", "nrrd", "pam", "pcx", "pgf", "sgi", "rgb", "rgba", "bw", "int", "inta", "sid",
+    "ras", "sun", "tga"
+]
 
-#all video Extensions
-valid_videos = ["3g2", "3gp", "aaf", "asf", "avchd", "avi", "drc", "flv", "m2v", "m4p", "m4v", "mkv", "mng", "mov", "mp2", "mp4", "mpe", "mpeg", "mpg", "mpv", "mxf", "nsv", "ogg", "ogv", "qt", "rm",
-                "rmvb", "roq", "svi", "vob", "webm", "wmv", "yuv"
-                ]
+# all video Extensions
+valid_videos = [
+    "3g2", "3gp", "aaf", "asf", "avchd", "avi", "drc", "flv", "m2v", "m4p", "m4v", "mkv", "mng", "mov",
+    "mp2", "mp4", "mpe", "mpeg", "mpg", "mpv", "mxf", "nsv", "ogg", "ogv", "qt", "rm",
+    "rmvb", "roq", "svi", "vob", "webm", "wmv", "yuv"
+]
 
-#write text to a text_file
-#@path path with given text ending e.g ./double/test.txt
-#@text can be a list of text or a string
-def writeText(path,text):
+# All archiv File Extensions
+valid_archiv = [
+    "7z", "a", "ace", "apk", "ar", "arc", "bz2", "cab", "chm", "cpio", "deb", "dmg", "ear", "egg", "epub",
+    "gz", "iso", "jar", "lz", "lzma", "lzo", "mar", "pea", "pet", "pkg", "rar", "rpm", "s7z", "sit", "sitx",
+    "shar", "tar", "tbz2", "tgz", "tlz", "txz", "war", "whl", "xpi", "xz", "zip", "zipx", "zst"
+]
+
+# all microsoft office extensions and their common supported extensions except word (belongs to text file formats
+valid_ms = [
+    "xls", "xlt", "xlm", "xlsx", "xlsm", "xltx", "xltm", "xlsb", "xla", "xlam", "xll", "xlw",
+    # Excel
+    "csv", "dbf", "dif", "ods", "gsheet",
+    # Additional Spreadsheet file formats
+    "ppt", "pot", "pps", "pptx", "pptm", "potx", "potm", "ppam", "ppsx", "ppsm", "sldx", "sldm",
+    # Powerpoint
+    "odp", "key", "gslides",
+    # Additional Presentation file formats
+    "adn", "accdb", "accdr", "accdt", "accda", "mdw", "accde", "mam", "maq", "mar",
+    "mat", "maf",
+    # Access
+    "laccdb", "ade", "adp", "mdb", "cdb", "mda", "mdn", "mdt", "mdf", "mde", "ldb",
+    # Access
+    "pub", "xps"
+    # Other
+]
+
+# common presentation file formats
+valid_pres = [
+    "ppt", "pot", "pps", "pptx", "pptm", "potx", "potm", "ppam", "ppsx", "ppsm", "sldx", "sldm",
+    # Powerpoint
+    "odp", "key", "gslides"
+    # Additional Presentation file formats
+]
+
+# common spreadsheet file formats
+valid_spread = [
+    "xls", "xlt", "xlm", "xlsx", "xlsm", "xltx", "xltm", "xlsb", "xla", "xlam", "xll", "xlw",
+    # Excel
+    "csv", "dbf", "dif", "ods", "gsheet"
+    # Additional Spreadsheet file formats
+]
+
+# common text files include word (for all text file extensions:
+# https://github.com/sindresorhus/text-extensions/blob/master/text-extensions.json)
+valid_tf = [
+    "doc", "docm", "docx", "dot", "dotx", "odt", "pdf", "rtf", "txt", "wps", "wpd", "gdoc"
+]
+
+#common executable file extensions
+valid_exe = [
+    "bat", "bin", "com", "exe", "msi"
+]
+
+#FILE FOLDER NAME GROUP
+VALID_IMG = "Image_Files"
+VALID_ARCHIV = "Archiv_Files"
+VALID_EXE = "Exe_Files"
+VALID_TF = "Text_Files"
+VALID_PRES = "Presentation_Files"
+VALID_VIDEOS ="Video_Files"
+VALID_SPREAD = "Spreadsheet_Files"
+OTHER = "Other_Files"
+
+
+
+
+# write text to a text_file
+# @path path with given text ending e.g ./double/test.txt
+# @text can be a list of text or a string
+def writeText(path, text):
     isEmpty = True
     text_file = open(path, "a+")
     text_file.seek(0)
@@ -43,7 +117,7 @@ def writeText(path,text):
         text_file.write(text)
     text_file.close()
 
-#get List w all Folders with path within the given @path
+# get List w all Folders with path within the given @path
 def getListofFolders(path):
     list_subfolders_with_paths = [
         f.path for f in os.scandir(path) if f.is_dir()]
@@ -53,7 +127,8 @@ def getListofFolders(path):
     for x in list_subfolders_with_paths:
         print(x)
 
-#get List of all the files w/o path within the given @path
+
+# get List of all the files w/o path within the given @path
 def getListofFileswPath(path):
     onlyfiles = [join(path, f) for f in os.listdir(path) if isfile(join(path, f))]
     print("all the files in path")
@@ -61,6 +136,7 @@ def getListofFileswPath(path):
     print(f"{temp} Files exist in Folder and Subfolder")
     print(onlyfiles)
     return onlyfiles
+
 
 def getListofFileswoPath(path):
     onlyfiles = [f for f in os.listdir(path) if isfile(join(path, f))]
@@ -70,10 +146,11 @@ def getListofFileswoPath(path):
     print(onlyfiles)
     return onlyfiles
 
-#get current dir, all subfoldernames, all subfoldernames w path,all files w path from given @path
-#dirfolders list of all folders with path from given @path
-#dirnames list of all foldernames w/o path
-#filenames list of all files w/o path
+
+# get current dir, all subfoldernames, all subfoldernames w path,all files w path from given @path
+# dirfolders list of all folders with path from given @path
+# dirnames list of all foldernames w/o path
+# filenames list of all files w/o path
 def getFileAndDirPath(path):
     f = []
     f0 = []
@@ -84,16 +161,17 @@ def getFileAndDirPath(path):
         if len(dirnames) > 0:
             f0.append(dirnames)
         for y in dirnames:
-             f1.append(os.path.join(dirfolders, y))
+            f1.append(os.path.join(dirfolders, y))
         for x in filenames:
             f2.append(os.path.join(dirfolders, x))
     f.append(f0)
     f.append(f1)
     f.append(f2)
-    return f #[current dir, subdir w/o path,subdir w path, file w path ]
+    return f  # [current dir, subdir w/o path,subdir w path, file w path ]
 
-#get all Images w path from given @path
-#save every extension images in list and add it to result list
+
+# get all Images w path from given @path
+# save every extension images in list and add it to result list
 def getAllImages(path):
     f = []
     count = 0
@@ -108,16 +186,27 @@ def getAllImages(path):
         count += len(lists)
     print("There are " + str(count) +
           " Images in this Folder")
-    #depends on how many extensions were found
-    return f #[[img w jpeg],[img w png]...]
+    # depends on how many extensions were found
+    return f  # [[img w jpeg],[img w png]...]
 
-#get the overall Number of Images from the given @path
+
+# get the overall Number of Images from the given @path
 def getNrofImages(path):
     count = 0
     list = getAllImages(path)
     for x in list:
         count += len(x)
     return count
+
+# get only file name without path
+def getFileName(FileList):
+    fileNames = []
+    if isinstance(FileList, list):
+        for x in FileList:
+            fileNames.append(os.path.basename(x))
+        return fileNames
+    elif isinstance(FileList, str):
+        return os.path.basename(FileList)
 
 # my_path/     the dir
 # **/       every file and dir under my_path
@@ -144,6 +233,7 @@ def getspecificFileExtension(path):
         getspecificFileExtension(path)
     return files
 
+
 # get all Extensions from path
 def getAllFileExtension(path):
     ListFiles = walk(path)
@@ -154,6 +244,7 @@ def getAllFileExtension(path):
                 SplitTypes.append(file_name.split(".")[-1])
     print(SplitTypes)
 
+
 # get all Extensions from a given List with images with paths
 def getAllImageExt(path, ImageList):
     SplitTypes = []
@@ -163,41 +254,44 @@ def getAllImageExt(path, ImageList):
                 SplitTypes.append(file_name.split(".")[-1])
     print(SplitTypes)
 
-#get file extension from given filepath or name
+
+# get file extension from given filepath or name
 def getFileExt(path):
     file_ext = path.split(".")[-1]
     return file_ext
 
 
 # find all duplicates which has Indicator at the end e.g (1)
-def findDuplicateImagesByInd(path,ImageList,indicator):
+def findDuplicateImagesByInd(path, ImageList, indicator):
     duImageList = []
     for images in ImageList:
         for filepath in images:
             pos = filepath.rfind(".")
-            if indicator in filepath[len(filepath[:pos])-len(indicator):pos]:
+            if indicator in filepath[len(filepath[:pos]) - len(indicator):pos]:
                 duImageList.append(filepath)
     print("There are " + str(len(duImageList)) +
           " duplicate Images in this Folder")
     return duImageList
 
-def createFolder(path,FolderName):
-    copyFolderPath = os.path.join(path,FolderName)
+
+def createFolder(path, FolderName):
+    copyFolderPath = os.path.join(path, FolderName)
     if os.path.isdir(copyFolderPath):
         print("folder already exist")
     else:
         os.mkdir(copyFolderPath)
     return copyFolderPath
 
-#@ImgList all Images in List with path
-#@DuList duplicateImages with path
-#@newDirPath Dirpath where new Folder for Copies is created
-#@FolderName folderName for new Folder
-#@filewOrg fileList w Original
-#returns path w new folder & all the duplicate file paths
-def copyFiles(newDirPath,FolderName,DuList,ImgList,Indicator,filewOrg):
+
+# @ImgList all Images in List with path
+# @DuList duplicateImages with path
+# @newDirPath Dirpath where new Folder for Copies is created
+# @FolderName folderName for new Folder
+# @filewOrg fileList w Original
+# returns path w new folder & all the duplicate file paths
+def copyFiles(newDirPath, FolderName, DuList, ImgList, Indicator, filewOrg):
     copy = []
-    copyFolderPath = os.path.join(newDirPath,FolderName)
+    copyFolderPath = os.path.join(newDirPath, FolderName)
     cnt_new = 0
     cnt_exist = 0
     destImgList = []
@@ -208,7 +302,7 @@ def copyFiles(newDirPath,FolderName,DuList,ImgList,Indicator,filewOrg):
     else:
         os.mkdir(copyFolderPath)
 
-#filenames duplicateImagesName without path
+    # filenames duplicateImagesName without path
     fileNames = getFileName(DuList)
     tic = time.perf_counter()
     destFolderImg = getAllImages(copyFolderPath)
@@ -219,16 +313,16 @@ def copyFiles(newDirPath,FolderName,DuList,ImgList,Indicator,filewOrg):
     for x in filewOrg[0]:
         if getFileName(x) not in doubleImg:
             if len(destImgList) > 0:
-                    if getFileName(x) in getFileName(destImgList):
-                        doubleImg.append(getFileName(x))
-                        cnt_exist += 1
-                    else:
-                        doubleImg.append(getFileName(x))
-                        copyFile(x,copyFolderPath)
-                        cnt_new += 1
+                if getFileName(x) in getFileName(destImgList):
+                    doubleImg.append(getFileName(x))
+                    cnt_exist += 1
+                else:
+                    doubleImg.append(getFileName(x))
+                    copyFile(x, copyFolderPath)
+                    cnt_new += 1
             else:
                 doubleImg.append(getFileName(x))
-                copyFile(x,copyFolderPath)
+                copyFile(x, copyFolderPath)
                 cnt_new += 1
 
     toc = time.perf_counter()
@@ -238,83 +332,129 @@ def copyFiles(newDirPath,FolderName,DuList,ImgList,Indicator,filewOrg):
     print(f"{cnt_new} New Files were copied")
     print(f"{cnt_exist} Files already existed")
     print(f"{getNrofImages(copyFolderPath)} total Images are in the directory\n")
-    copy = [copyFolderPath,filewOrg,[cnt_new,cnt_exist]]
+    copy = [copyFolderPath, filewOrg, [cnt_new, cnt_exist]]
     return copy
 
-#copy a file by given src path to destination path
-def copyFile(file,destpath):
+
+# copy a file by given src path to destination path
+def copyFile(file, destpath):
     try:
-        shutil.copy(file,destpath)
+        shutil.copy(file, destpath)
         print(file)
 
-# If source and destination are same
+    # If source and destination are same
     except shutil.SameFileError:
         print("Source and destination represents the same file.")
 
-# If there is any permission issue
+    # If there is any permission issue
     except PermissionError:
         print("Permission denied.")
 
-# # For other errors
+    # # For other errors
     except:
         print("Error occurred while copying file.")
 
-def removeFile(rmFile):
-    os.remove(rmFile)
 
-#remove file by provided FileList
+def removeFile(rmFile):
+    try:
+        os.remove(rmFile)
+    except OSError:
+        pass
+
+# remove file by provided FileList
 def removeFiles(rmFileList):
     for x in rmFileList:
         os.remove(x)
         print("remove following files")
         print(x)
 
-#check if original file is in the same folder than duplicate
+
+# check if original file is in the same folder than duplicate
 def checkDupInSameFold(duList, fileList, indicator):
     dupList = []
-    dupwOrg =  []
+    dupwOrg = []
     for dup in duList:
         duExt = "." + getFileName(dup).split(".")[-1]
-        dutemp = getFileName(dup)[:-len(indicator)-len(duExt)]
+        dutemp = getFileName(dup)[:-len(indicator) - len(duExt)]
         dutemp = dutemp.strip() + duExt
         for x in fileList:
             if getFileName(x) == dutemp:
-                if x.replace(getFileName(x),'') == dup.replace(getFileName(dup),''):
-                     dupwOrg.append(dup)
-#                     print("original file is in same folder")
+                if x.replace(getFileName(x), '') == dup.replace(getFileName(dup), ''):
+                    dupwOrg.append(dup)
+    #                     print("original file is in same folder")
 
-    dupList = [dupwOrg,[x for x in duList if x not in dupwOrg]]
+    dupList = [dupwOrg, [x for x in duList if x not in dupwOrg]]
     temp = len(dupList[1])
     print(f"{temp} duplicate Files are not in the same folder as original")
     print(dupList[1])
     temp = len(dupList[0])
     print(f"{temp} duplicate Files are in the same directory")
-    return dupList #[DuplicatePath with Original Files, DuplicateFiles W/o Orginal Files]
+    return dupList  # [DuplicatePath with Original Files, DuplicateFiles W/o Orginal Files]
 
 
-#check if file with indicator is really duplicate or if its the only file without original
-#duList List of duplicateImages w path
-#fileList List of all Img in Folders
-def checkDuplicateByEndInd(duList, fileList,indicator):
+# check if file with indicator is really duplicate or if its the only file without original
+# duList List of duplicateImages w path
+# fileList List of all Img in Folders
+def checkDuplicateByEndInd(duList, fileList, indicator):
     dupList = []
     dupwOrg = []
     for dup in duList:
-        duExt = "." + getFileName(dup).split(".")[-1] #.jpg
-        dutemp = getFileName(dup)[:-len(indicator)-len(duExt)]
-        dutemp = dutemp.strip() + duExt #IMAG0046
+        duExt = "." + getFileName(dup).split(".")[-1]  # .jpg
+        dutemp = getFileName(dup)[:-len(indicator) - len(duExt)]
+        dutemp = dutemp.strip() + duExt  # IMAG0046
         for x in fileList:
             if getFileName(x) == dutemp:
                 if dup not in dupwOrg:
                     dupwOrg.append(dup)
-    dupList = [dupwOrg,[x for x in duList if x not in dupwOrg]]
-    return dupList #[DuplicatePath with Original Files, DuplicateFiles W/o Orginal Files]
+    dupList = [dupwOrg, [x for x in duList if x not in dupwOrg]]
+    return dupList  # [DuplicatePath with Original Files, DuplicateFiles W/o Orginal Files]
 
-#get only file name without path
-def getFileName(FileList):
-    fileNames = []
-    if isinstance(FileList, list):
-        for x in FileList:
-            fileNames.append(os.path.basename(x))
-        return fileNames
-    elif isinstance(FileList, str):
-        return os.path.basename(FileList)
+#sort files by their file extension and copy them into new folder
+def sortbyext(path):
+    list = getListofFileswPath(path)
+    for file in list:
+        if os.path.exists(file):
+            if getFileExt(file) in valid_images:
+                folderpath = createFolder(os.curdir, getFileExt(file))
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+
+#sort files by given file groups and copy them into group folder
+def sortbyGroup(path):
+    list = getListofFileswPath(path)
+    for file in list:
+        if os.path.exists(file):
+            if getFileExt(file) in valid_images:
+                folderpath = createFolder(os.curdir, VALID_IMG)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+            elif getFileExt(file) in valid_archiv:
+                folderpath = createFolder(os.curdir, VALID_ARCHIV)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+            elif getFileExt(file) in valid_exe:
+                folderpath = createFolder(os.curdir, VALID_EXE)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+            elif getFileExt(file) in valid_tf:
+                folderpath = createFolder(os.curdir, VALID_TF)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+            elif getFileExt(file) in valid_pres:
+                folderpath = createFolder(os.curdir, VALID_PRES)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+
+            elif getFileExt(file) in valid_videos:
+                folderpath = createFolder(os.curdir, VALID_VIDEOS)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+
+            elif getFileExt(file) in valid_spread:
+                folderpath = createFolder(os.curdir, VALID_SPREAD)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
+            else:
+                folderpath = createFolder(os.curdir, OTHER)
+                copyFile(getFileName(file), folderpath)
+                removeFile(file)
