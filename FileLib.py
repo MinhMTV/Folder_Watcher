@@ -297,7 +297,7 @@ def checkDupInSameFold(duList, fileList, indicator):
 #fileList List of all Img in Folders
 def checkDuplicateByEndInd(duList, fileList,indicator):
     dupList = []
-    dupwOrg =  []
+    dupwOrg = []
     for dup in duList:
         duExt = "." + getFileName(dup).split(".")[-1] #.jpg
         dutemp = getFileName(dup)[:-len(indicator)-len(duExt)]
