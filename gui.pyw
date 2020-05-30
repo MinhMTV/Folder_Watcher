@@ -89,6 +89,12 @@ def checkSetting(configfile_name):
         print('No setting File')
         return False
 
+def checkWatchfolder(watchPath):
+    if watchPath:
+        print("Watched Folder is " + watchPath)
+        background(lambda: h.watchDir(watchPath), ())
+    else:
+        print("No Watched Folder defined yet")
 
 # Systemtray
 def quit_window(icon, item, window):
@@ -253,13 +259,9 @@ def main():
 
 if __name__ == '__main__':
     filename = checkConfig(configfile_name)
+    checkWatchfolder(filename)
     for arg in sys.argv:
         print('Argument: ', arg)
         if arg == STARTUP_KEY:
             withdraw_window(mainwindow)
-    if filename:
-        print("Watched Folder is " + filename)
-        background(lambda: h.watchDir(filename), ())
-    else:
-        print("No Watched Folder defined yet")
     main()
