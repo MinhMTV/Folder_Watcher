@@ -82,6 +82,12 @@ valid_exe = [
     "bat", "bin", "com", "exe", "msi"
 ]
 
+# files that should not be moved, because they are not fully resolved
+excluded_files = [
+    "crdownload", "part", "partial"
+
+]
+
 # FILE FOLDER NAME GROUP
 VALID_IMG = "Image_Files"
 VALID_ARCHIV = "Archiv_Files"
@@ -417,7 +423,9 @@ def sortbyext(path):
     list = getListofFileswPath(path)
     for file in list:
         if os.path.exists(file):
-            if getFileExt(file) in valid_images:
+            if getFileExt(file).lower() in excluded_files:
+                print("dont remove cause download file")
+            else:
                 folderpath = createFolder(os.curdir, getFileExt(file))
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
@@ -428,37 +436,40 @@ def sortbyGroup(path):
     list = getListofFileswPath(path)
     for file in list:
         if os.path.exists(file):
-            if getFileExt(file) in valid_images:
+            if getFileExt(file).lower() in valid_images:
                 folderpath = createFolder(os.curdir, VALID_IMG)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
-            elif getFileExt(file) in valid_archiv:
+            elif getFileExt(file).lower() in valid_archiv:
                 folderpath = createFolder(os.curdir, VALID_ARCHIV)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
-            elif getFileExt(file) in valid_exe:
+            elif getFileExt(file).lower() in valid_exe:
                 folderpath = createFolder(os.curdir, VALID_EXE)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
-            elif getFileExt(file) in valid_tf:
+            elif getFileExt(file).lower() in valid_tf:
                 folderpath = createFolder(os.curdir, VALID_TF)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
-            elif getFileExt(file) in valid_pres:
+            elif getFileExt(file).lower() in valid_pres:
                 folderpath = createFolder(os.curdir, VALID_PRES)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
 
-            elif getFileExt(file) in valid_videos:
+            elif getFileExt(file).lower() in valid_videos:
                 folderpath = createFolder(os.curdir, VALID_VIDEOS)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
 
-            elif getFileExt(file) in valid_spread:
+            elif getFileExt(file).lower() in valid_spread:
                 folderpath = createFolder(os.curdir, VALID_SPREAD)
                 copyFile(getFileName(file), folderpath)
                 removeFile(file)
             else:
-                folderpath = createFolder(os.curdir, OTHER)
-                copyFile(getFileName(file), folderpath)
-                removeFile(file)
+                if getFileExt(file).lower() in excluded_files:
+                    print("dont remove cause download file")
+                else:
+                    folderpath = createFolder(os.curdir, OTHER)
+                    copyFile(getFileName(file), folderpath)
+                    removeFile(file)
