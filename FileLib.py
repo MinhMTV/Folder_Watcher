@@ -84,7 +84,7 @@ valid_exe = [
 
 # files that should not be moved, because they are not fully resolved
 excluded_files = [
-    "crdownload", "part", "partial"
+    "crdownload", "part", "partial", "tmp", "temp"
 
 ]
 
